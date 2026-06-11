@@ -63,12 +63,12 @@ export class SocialArea extends Area
             }
         }
 
-        // Add Contact Info on Onlyfans
+        // Add Contact Info on Onlyfans (Instagram)
         if (onlyfansBasePos) {
             onlyfansBasePos.y = 1.0 // Set height for the interactive point
             this.game.interactivePoints.create(
                 onlyfansBasePos,
-                'Contact: 9586979897\nAddress: 4005, Silver Business Point, Near VIP Circle, Uttran, Surat',
+                'Contact: 9586979897\nAddress: 4005, Silver Business Point,\nNear VIP Circle, Uttran, Surat',
                 InteractivePoints.ALIGN_RIGHT,
                 InteractivePoints.STATE_CONCEALED,
                 () => {},
@@ -250,6 +250,32 @@ export class SocialArea extends Area
         this.statue = {}
         this.statue.body = this.references.items.get('statue')[0].userData.object.physical.body
         this.statue.down = false
+
+        // Add Instagram point on the statue
+        const position = this.references.items.get('statue')[0].position.clone()
+        position.y = 1.0 // Height of the point
+        this.game.interactivePoints.create(
+            position,
+            'Instagram',
+            InteractivePoints.ALIGN_RIGHT,
+            InteractivePoints.STATE_CONCEALED,
+            () =>
+            {
+                window.open('https://www.instagram.com/socialrabbit.in/', '_blank')
+            },
+            () =>
+            {
+                this.game.inputs.interactiveButtons.addItems(['interact'])
+            },
+            () =>
+            {
+                this.game.inputs.interactiveButtons.removeItems(['interact'])
+            },
+            () =>
+            {
+                this.game.inputs.interactiveButtons.removeItems(['interact'])
+            }
+        )
     }
 
     setFWA()

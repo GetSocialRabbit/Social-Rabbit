@@ -123,9 +123,7 @@ export class BehindTheSceneArea extends Area
             InteractivePoints.STATE_CONCEALED,
             () =>
             {
-                this.game.inputs.interactiveButtons.clearItems()
-                this.game.menu.open('behindTheScene')
-                this.interactivePoint.hide()
+                window.open('https://www.instagram.com/socialgang_bts?igsh=MTdrc2E5bnhrNjIycw==', '_blank')
             },
             () =>
             {
