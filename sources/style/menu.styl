@@ -136,16 +136,16 @@
      * Previews
      */
     .previews
+        display none
         position relative
-        width 50%
-        display flex
+        width 0%
         align-items center
         justify-content center
         background radial-gradient(ellipse at top left, #251f2b, #1d1721)
 
         @media only screen and (orientation portrait)
             width auto
-            height 30%
+            height 0%
 
         &::after
             content ''
@@ -187,13 +187,13 @@
      */
     .contents
         position relative
-        width 50%
+        width 100%
         background radial-gradient(ellipse at top left, #251f2b, #1d1721)
         overflow hidden
 
         @media only screen and (orientation portrait)
             width auto
-            height 70%
+            height 100%
 
         .content
             display block
@@ -219,7 +219,7 @@
             margin-bottom 0.5em
 
         .content-inner
-            width @css{ calc(min(1000px, calc(100vw - 120px)) / 2) }
+            width @css{ min(1000px, calc(100vw - 120px)) }
             padding 25px 40px 40px 40px
 
             @media only screen and (orientation portrait)

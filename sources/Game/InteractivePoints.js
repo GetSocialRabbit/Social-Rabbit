@@ -209,11 +209,14 @@ export class InteractivePoints
          * Label
          */
         // Canvas
-        const height = 64
+        const lines = text.split('\n')
+        const lineHeight = 64
+        const height = lineHeight * lines.length
+        
         const textPaddingLeft = align === InteractivePoints.ALIGN_LEFT ? 60 : 12
         const textPaddingRight = align === InteractivePoints.ALIGN_LEFT ? 12 : 60
         const textOffsetVertical = 2
-        const font = `700 ${height}px "Amatic SC"`
+        const font = `700 ${lineHeight}px "Amatic SC"`
 
         const canvas = document.createElement('canvas')
         canvas.style.position = 'fixed'
@@ -225,8 +228,13 @@ export class InteractivePoints
         const context = canvas.getContext('2d')
         context.font = font
 
-        const textSize = context.measureText(text)
-        const width = Math.ceil(textSize.width) + textPaddingLeft + textPaddingRight + 2
+        let maxTextWidth = 0
+        for(const line of lines) {
+            const textSize = context.measureText(line)
+            if(textSize.width > maxTextWidth) maxTextWidth = textSize.width
+        }
+
+        const width = Math.ceil(maxTextWidth) + textPaddingLeft + textPaddingRight + 2
         canvas.width = width
         canvas.height = height
 
@@ -237,7 +245,10 @@ export class InteractivePoints
         context.fillStyle = '#ffffff'
         context.textAlign = 'start'
         context.textBaseline = 'middle'
-        context.fillText(text, textPaddingLeft + 1, height * 0.5 + textOffsetVertical)
+        
+        for(let i = 0; i < lines.length; i++) {
+            context.fillText(lines[i], textPaddingLeft + 1, lineHeight * i + lineHeight * 0.5 + textOffsetVertical)
+        }
 
         const labelTexture = new THREE.Texture(canvas)
         labelTexture.minFilter = THREE.NearestFilter
@@ -279,8 +290,8 @@ export class InteractivePoints
             labelMaterial
         )
         label.renderOrder = 6
-        label.scale.x = 0.75 * width / height
-        label.scale.y = 0.75
+        label.scale.x = 0.75 * width / lineHeight
+        label.scale.y = 0.75 * height / lineHeight
         label.position.z = -0.01
 
         label.position.x = align === InteractivePoints.ALIGN_LEFT ? 0 : - label.scale.x
@@ -592,7 +603,7 @@ export class InteractivePoints
             for(const item of this.items)
             {
                 const itemDistance = Math.hypot(item.position.x - this.game.player.position2.x, item.position.y - this.game.player.position2.y)
-                const isIn = itemDistance < 2.5
+                const isIn = itemDistance < 4.0
                 
                 if(isIn)
                 {

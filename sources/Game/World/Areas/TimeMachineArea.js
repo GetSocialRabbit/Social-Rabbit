@@ -19,12 +19,12 @@ export class TimeMachineArea extends Area
     {
         this.interactivePoint = this.game.interactivePoints.create(
             this.references.items.get('interactivePoint')[0].position,
-            'Time Machine',
+            'Social Flipss',
             InteractivePoints.ALIGN_RIGHT,
             InteractivePoints.STATE_CONCEALED,
             () =>
             {
-                window.open('https://2019.bruno-simon.com')
+                window.open('https://www.socialflipss.com/')
             },
             () =>
             {
@@ -47,6 +47,7 @@ export class TimeMachineArea extends Area
         let collideIndex = 0
 
         const screenTextures = [
+            this.game.resources.timeMachineScreenLogo,
             this.game.resources.timeMachineScreenFolioTexture,
             this.game.resources.timeMachineScreenMGSTexture,
         ]

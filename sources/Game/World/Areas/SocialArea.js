@@ -23,16 +23,65 @@ export class SocialArea extends Area
             })
         }
 
-        this.setLinks()
+        // this.setLinks()
         this.setFans()
-        this.setOnlyFans()
+        // this.setOnlyFans()
         this.setStatue()
         // this.setFWA()
         this.setAchievement()
+
+        // Hide the 3D logo pedestals and fans, and spawn explosive crates instead!
+        const socialNames = ['discord', 'bluesky', 'github', 'linkedin', 'twitch', 'x', 'youtube', 'mail']
+        const spawnedBombs = new Set()
+        
+        let onlyfansBasePos = null
+
+        for(const object of this.objects.items) {
+            if (object.visual && object.visual.object3D && object.visual.object3D.name) {
+                const name = object.visual.object3D.name.toLowerCase()
+                
+                if (name.includes('onlyfans')) {
+                    if (!onlyfansBasePos) {
+                        onlyfansBasePos = object.visual.object3D.position.clone()
+                    }
+                } else {
+                    const matchedSocial = socialNames.find(social => name.includes(social))
+                    if (matchedSocial) {
+                        this.game.objects.disable(object)
+                        object.visual.object3D.visible = false
+
+                        // Spawn explosive crate only once per social platform
+                        if(!spawnedBombs.has(matchedSocial) && this.game.world && this.game.world.explosiveCrates) {
+                            spawnedBombs.add(matchedSocial)
+                            const position = object.visual.object3D.position.clone()
+                            // Set absolute Y so the bomb rests on the black pedestal base
+                            position.y = 1.0 
+                            this.game.world.explosiveCrates.addDynamicCrate(position, object.visual.object3D.quaternion)
+                        }
+                    }
+                }
+            }
+        }
+
+        // Add Contact Info on Onlyfans
+        if (onlyfansBasePos) {
+            onlyfansBasePos.y = 1.0 // Set height for the interactive point
+            this.game.interactivePoints.create(
+                onlyfansBasePos,
+                'Contact: 9586979897\nAddress: 4005, Silver Business Point, Near VIP Circle, Uttran, Surat',
+                InteractivePoints.ALIGN_RIGHT,
+                InteractivePoints.STATE_CONCEALED,
+                () => {},
+                () => { this.game.inputs.interactiveButtons.addItems(['interact']) },
+                () => { this.game.inputs.interactiveButtons.removeItems(['interact']) },
+                () => { this.game.inputs.interactiveButtons.removeItems(['interact']) }
+            )
+        }
     }
 
     setLinks()
     {
+        /*
         const radius = 6
         let i = 0
 
@@ -53,7 +102,7 @@ export class SocialArea extends Area
                 {
                     if(link.url)
                         window.open(link.url, '_blank')
-                    else(link.modal)
+                    else if(link.modal)
                         this.game.modals.open(link.modal)
                 },
                 () =>
@@ -72,6 +121,7 @@ export class SocialArea extends Area
             
             i++
         }
+        */
     }
 
     setFans()

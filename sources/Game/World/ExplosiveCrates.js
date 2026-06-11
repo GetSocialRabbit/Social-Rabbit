@@ -1,4 +1,5 @@
 import * as THREE from 'three/webgpu'
+import { mul, color } from 'three/tsl'
 import gsap from 'gsap'
 import { Game } from '../Game.js'
 import { InstancedGroup } from '../InstancedGroup.js'
@@ -19,6 +20,18 @@ export class ExplosiveCrates
 
         // Update materials 
         this.game.materials.updateObject(base)
+
+        // Tint red
+        base.traverse((child) => {
+            if (child.isMesh && child.material) {
+                if (child.material.colorNode) {
+                    child.material.colorNode = mul(child.material.colorNode, color('#ff4444'))
+                } else {
+                    child.material.colorNode = color('#ff4444')
+                }
+                child.material.needsUpdate = true
+            }
+        })
 
         // Create instanced group
         this.instancedGroup = new InstancedGroup(this.references, base)
@@ -118,6 +131,58 @@ export class ExplosiveCrates
                 })
             )
         }
+    }
+
+    addDynamicCrate(position, quaternion)
+    {
+        const mesh = new THREE.Group()
+        
+        this.instancedGroup.group.traverse((_child) =>
+        {
+            if(_child.isMesh)
+            {
+                const instancedMesh = new THREE.InstancedMesh(_child.geometry, _child.material, 1)
+                instancedMesh.castShadow = _child.castShadow
+                instancedMesh.receiveShadow = _child.receiveShadow
+                
+                const matrix = new THREE.Matrix4()
+                matrix.compose(_child.position, _child.quaternion, _child.scale)
+                instancedMesh.setMatrixAt(0, matrix)
+                instancedMesh.instanceMatrix.needsUpdate = true
+
+                mesh.add(instancedMesh)
+            }
+        })
+
+        mesh.position.copy(position)
+        if(quaternion) mesh.quaternion.copy(quaternion)
+        
+        const crate = {}
+        crate.id = this.items.length
+        crate.exploded = false
+        crate.reference = mesh
+        crate.object = this.game.objects.add(
+            {
+                model: mesh,
+            },
+            {
+                type: 'dynamic',
+                position: mesh.position.clone(),
+                rotation: mesh.quaternion.clone(),
+                friction: 0.7,
+                mass: 0.02,
+                sleeping: true,
+                colliders: [ { shape: 'cuboid', parameters: [ 0.5, 0.5, 0.5 ], category: 'object' } ],
+                waterGravityMultiplier: - 1,
+                contactThreshold: 0,
+                onCollision: () =>
+                {
+                    this.explode(crate)
+                }
+            },
+        )
+        
+        this.items.push(crate)
     }
 
     explode(crate)
