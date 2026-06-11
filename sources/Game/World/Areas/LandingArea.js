@@ -29,6 +29,10 @@ export class LandingArea extends Area
         for(const reference of references)
         {
             this.game.objects.disable(reference.userData.object)
+            if (reference.userData.object && reference.userData.object.visual) {
+                reference.userData.object.visual.object3D.visible = false
+            }
+            reference.visible = false
         }
 
         // Generate SOCIAL RABBIT
@@ -44,17 +48,14 @@ export class LandingArea extends Area
                     
                     const font = new Font(json)
                     const text = 'SOCIAL RABBIT'
-                    // Steal rotation from original text for diagonal alignment
-                    const basePosition = references[0].position.clone()
-                    const baseQuaternion = references[0].quaternion.clone()
+                    // Sort references by X coordinate to find the left-most letter (the 'B')
+                    const sortedRefs = [...references].sort((a, b) => a.position.x - b.position.x)
+                    
+                    // Steal rotation and position from the left-most original text
+                    const basePosition = sortedRefs[0].position.clone()
+                    const baseQuaternion = sortedRefs[0].quaternion.clone()
                     const direction = new THREE.Vector3(1, 0, 0).applyQuaternion(baseQuaternion).normalize()
                     
-                    // Shift text to the right along the path so 'SO' doesn't clip into the crates/lantern!
-                    basePosition.add(direction.clone().multiplyScalar(2.5))
-                    // Also move it slightly forward across the path to center it
-                    const zDir = new THREE.Vector3(0, 0, 1).applyQuaternion(baseQuaternion).normalize()
-                    basePosition.add(zDir.clone().multiplyScalar(0.5))
-
                     // Golden yellow material to pop against purple grass
                     const baseMaterial = new MeshDefaultMaterial({
                         colorNode: color(0xffcc00),

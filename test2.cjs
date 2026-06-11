@@ -1,7 +1,0 @@
-const fs = require('fs');
-const data = fs.readFileSync('static/areas/areas.glb');
-const jsonChunkLength = data.readUInt32LE(12);
-const jsonString = data.toString('utf8', 20, 20 + jsonChunkLength);
-const json = JSON.parse(jsonString);
-const texts = json.nodes.filter(n => n.name && n.name.startsWith('text')).map(n => ({name: n.name, translation: n.translation, scale: n.scale}));
-console.log(texts);

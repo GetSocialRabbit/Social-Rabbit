@@ -181,7 +181,7 @@ export class Achievements
             const item = {}
             item.name = rewardElement.dataset.name
             item.element = rewardElement
-            item.threshold = Math.round(i / (this.rewards.count - 1) * this.globalProgress.totalCount)
+            item.threshold = 0 // Math.round(i / (this.rewards.count - 1) * this.globalProgress.totalCount)
             item.locked = true
             item.tooltipTextElement = item.element.querySelector('.js-tooltip strong')
 
