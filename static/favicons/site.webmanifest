@@ -1,0 +1,21 @@
+{
+  "name": "Social Rabbit",
+  "short_name": "Social Rabbit",
+  "icons": [
+    {
+      "src": "/favicons/social-rabbit-icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/favicons/social-rabbit-icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff",
+  "display": "standalone"
+}
