@@ -8,6 +8,7 @@ window.addEventListener('unhandledrejection', function(event) {
 import './threejs-override.js'
 import { Game } from './Game/Game.js'
 import consoleLog from './data/consoleLog.js'
+import { injectSpeedInsights } from '@vercel/speed-insights'
 
 if(import.meta.env.VITE_LOG)
     console.log(
@@ -18,3 +19,6 @@ if(import.meta.env.VITE_GAME_PUBLIC)
     window.game = new Game()
 else
     new Game()
+
+// Initialize Vercel Speed Insights
+injectSpeedInsights()
